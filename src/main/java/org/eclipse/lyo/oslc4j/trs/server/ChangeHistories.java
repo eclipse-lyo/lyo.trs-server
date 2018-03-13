@@ -296,6 +296,8 @@ public abstract class ChangeHistories {
         return base;
     }
 
+    protected void newChangeEvent(final ChangeEvent ce) {}
+
     /**
      * Main method called to create the change log and the base objects when a call to the TRS
      * service is made. Depending on the refresh rate defined for the trs service, the base objects
@@ -476,6 +478,7 @@ public abstract class ChangeHistories {
                 changeLog = null;
                 currentNumberOfChangeLog = 0;
             }
+            newChangeEvent(ce);
         }
         // Base resource's CutoffEvent is most recent Change event.
         // Since the order of the returned HistoryData is "new -> old",
