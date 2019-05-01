@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 import org.eclipse.lyo.core.trs.Base;
 import org.junit.Test;
@@ -13,8 +12,6 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.*;
 
 public class InmemPagedTrsTest {
-
-    private Random random = new Random();
 
     @Test
     public void testEmptyLog() {
@@ -30,7 +27,8 @@ public class InmemPagedTrsTest {
 
     @Test
     public void testEmptyLogWithBase() {
-        final InmemPagedTrs inmemPagedTrs = buildPagedTrs(ImmutableSet.of(dummyUri(), dummyUri()));
+        final InmemPagedTrs inmemPagedTrs = buildPagedTrs(ImmutableSet.of(TRSTestUtil.dummyUri(), TRSTestUtil
+                .dummyUri()));
 
         final Base base = inmemPagedTrs.getBaseResource(1);
         assertThat(base.getMembers()).hasSize(2);
@@ -39,8 +37,9 @@ public class InmemPagedTrsTest {
     @Test
     public void testEmptyLogWithPagedBase() {
         final InmemPagedTrs inmemPagedTrs = buildPagedTrs(
-                ImmutableSet.of(dummyUri(), dummyUri(), dummyUri(), dummyUri(), dummyUri(),
-                        dummyUri(), dummyUri()));
+                ImmutableSet.of(TRSTestUtil.dummyUri(), TRSTestUtil.dummyUri(), TRSTestUtil.dummyUri(), TRSTestUtil
+                                .dummyUri(), TRSTestUtil.dummyUri(),
+                        TRSTestUtil.dummyUri(), TRSTestUtil.dummyUri()));
 
         assertThat(inmemPagedTrs.basePageCount()).isEqualTo(2);
 
@@ -55,9 +54,9 @@ public class InmemPagedTrsTest {
     public void testLogWithEmptyBase() {
         final InmemPagedTrs pagedTrs = buildPagedTrs(ImmutableSet.of());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
         assertThat(pagedTrs.changelogPageCount()).isEqualTo(1);
 
@@ -68,14 +67,14 @@ public class InmemPagedTrsTest {
     public void testPagedLogWithEmptyBase() {
         final InmemPagedTrs pagedTrs = buildPagedTrs(ImmutableSet.of());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
         assertThat(pagedTrs.changelogPageCount()).isEqualTo(2);
 
@@ -87,14 +86,14 @@ public class InmemPagedTrsTest {
     public void testLogOrderUnique() {
         final InmemPagedTrs pagedTrs = buildPagedTrs(ImmutableSet.of());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
         assertThat(pagedTrs.getChangeLog(1)
                 .getChange()
@@ -112,14 +111,14 @@ public class InmemPagedTrsTest {
     public void testLogOrderMonotonic() {
         final InmemPagedTrs pagedTrs = buildPagedTrs(ImmutableSet.of());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
         final Optional<Integer> firstPageOrderMax = pagedTrs.getChangeLog(1)
                 .getChange()
@@ -137,14 +136,14 @@ public class InmemPagedTrsTest {
     public void testLogPagesLinked() {
         final InmemPagedTrs pagedTrs = buildPagedTrs(ImmutableSet.of());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
         assertThat(pagedTrs.getChangeLog(2).getPrevious()).isEqualTo(pagedTrs.getChangeLog(1).getAbout());
     }
@@ -153,20 +152,16 @@ public class InmemPagedTrsTest {
     public void testLogPagesLinkedFirstNil() {
         final InmemPagedTrs pagedTrs = buildPagedTrs(ImmutableSet.of());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
-        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
+        pagedTrs.onHistoryData(TRSTestUtil.createHistory());
 
         assertThat(pagedTrs.getChangeLog(1).getPrevious()).isEqualTo(TRSUtil.NIL_URI);
-    }
-
-    private URI dummyUri() {
-        return URI.create("http://localhost:1337/r/" + random.nextInt(Integer.MAX_VALUE));
     }
 
     private InmemPagedTrs buildPagedTrs() {

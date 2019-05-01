@@ -65,13 +65,6 @@ public class TRSUtilTest {
 
     }
 
-    public static HistoryData createHistory() {
-        final HistoryData historyData = HistoryData.getInstance(new Date(),
-                URI.create(String.format("urn:uuid:%s", UUID.randomUUID().toString())),
-                HistoryData.CREATED);
-        return historyData;
-    }
-
     private static void initChangeEvent(ChangeEvent ce) throws URISyntaxException {
         java.net.URI changeEvenUri = new URI(changeEventUri());
         java.net.URI baseMemberUri = new URI(baseMemberUri());

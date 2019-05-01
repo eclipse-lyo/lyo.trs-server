@@ -21,6 +21,8 @@ public interface PagedTrs {
      */
     ChangeLog getChangeLog(Integer page);
 
+    ChangeLog getChangeLogLast();
+
     /**
      * @return number of the Base pages
      */
@@ -30,4 +32,5 @@ public interface PagedTrs {
      * @return number of the ChangeLog pages
      */
     int changelogPageCount();
+
 }

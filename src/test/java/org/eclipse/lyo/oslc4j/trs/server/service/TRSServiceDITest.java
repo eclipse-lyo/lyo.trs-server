@@ -1,5 +1,6 @@
 package org.eclipse.lyo.oslc4j.trs.server.service;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import javax.inject.Singleton;
 import javax.ws.rs.core.Application;
@@ -50,6 +51,13 @@ public class TRSServiceDITest extends JerseyTest {
         enable(TestProperties.LOG_TRAFFIC);
         enable(TestProperties.DUMP_ENTITY);
 
+        try {
+            OSLC4JUtils.setPublicURI(getBaseUri().toString());
+        } catch (MalformedURLException e) {
+            System.err.println("Can't set the OSLC4J public URI");
+        }
+        OSLC4JUtils.setServletPath("/");
+
         return new ResourceConfig(TrackedResourceSetService.class)
                 .register(new AbstractBinder() {
                     @Override
@@ -60,12 +68,6 @@ public class TRSServiceDITest extends JerseyTest {
                     }
                 })
                 .registerClasses(JenaProvidersRegistry.getProviders());
-    }
-
-    @Before
-    public void setUpUri() throws Exception {
-        OSLC4JUtils.setPublicURI(getBaseUri().toString());
-        OSLC4JUtils.setServletPath("/");
     }
 
     @Test

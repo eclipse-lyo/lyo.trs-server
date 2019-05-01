@@ -120,6 +120,11 @@ public class InmemPagedTrs implements PagedTrs, ResourceEventHandler {
     }
 
     @Override
+    public ChangeLog getChangeLogLast() {
+        return getChangeLog(changelogPageCount());
+    }
+
+    @Override
     public int changelogPageCount() {
         return changelogResources.size();
     }

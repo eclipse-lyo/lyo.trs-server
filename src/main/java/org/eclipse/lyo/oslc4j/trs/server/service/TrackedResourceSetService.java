@@ -79,22 +79,20 @@ public class TrackedResourceSetService {
     @GET
     @Produces({OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_RDF_XML,
             OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
-    public TrackedResourceSet getTrackedResourceSet(@Context UriInfo uriInfo) {
+    public TrackedResourceSet getTrackedResourceSet(@Context UriInfo uriInfo)
+            throws URISyntaxException {
         TrackedResourceSet result = new TrackedResourceSet();
 
         result.setAbout(uriInfo.getRequestUri());
         result.setBase(uriInfo.getAbsolutePathBuilder().path(BASE_PATH).build());
 
-        ChangeLog changeLog = getChangeHistories().getChangeLog(1);
-        if (changeLog == null) {
-            changeLog = new ChangeLog();
-        }
-        try {
-            result.setChangeLog(changeLog);
-        } catch (URISyntaxException e) {
+        if(getPagedTrs().changelogPageCount() == 0) {
             // FIXME Andrew@2019-04-27: remove this exception from the signature
-            throw new IllegalArgumentException("Can't set the change log", e);
+            result.setChangeLog(new ChangeLog());
+        } else {
+            result.setChangeLog(getPagedTrs().getChangeLogLast());
         }
+
         return result;
     }
 
@@ -122,7 +120,7 @@ public class TrackedResourceSetService {
     @Produces({OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_RDF_XML,
                       OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
     public Response getBasePage(@PathParam("page") int pageNo) {
-        Base base = getChangeHistories().getBaseResource(pageNo);
+        Base base = getPagedTrs().getBaseResource(pageNo);
         if (base == null) {
             final Error entity = new Error();
             entity.setMessage("Wrong TRS Base page URI");
@@ -148,7 +146,7 @@ public class TrackedResourceSetService {
         return Response.ok(base).header("Link", TRSUtil.linkHeaderValue(base)).build();
     }
 
-    protected PagedTrs getChangeHistories() {
+    protected PagedTrs getPagedTrs() {
         return changeHistories;
     }
 
@@ -179,7 +177,7 @@ public class TrackedResourceSetService {
     public Response getChangeLogPage(@PathParam("page") int page) {
         log.trace("TRS Change Log page '{}' requested", page);
 
-        ChangeLog changeLog = getChangeHistories().getChangeLog(page);
+        ChangeLog changeLog = getPagedTrs().getChangeLog(page);
         if (changeLog == null) {
             final Error entity = new Error();
             entity.setMessage("Wrong TRS Change Log page URI");
