@@ -59,6 +59,7 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
  */
 public class TRSUtil {
     public static final SimpleDateFormat XSD_DATETIME_FORMAT;
+    public final static URI NIL_URI = URI.create(TRSConstants.RDF_NIL);
     public static QName dateModifiedQname = new QName(OslcConstants.DCTERMS_NAMESPACE, "modified");
 
     static Comparator<ChangeEvent> changeEventComparator = Comparator.comparingInt(

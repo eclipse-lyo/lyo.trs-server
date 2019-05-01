@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
  */
 public class InmemPagedTrs implements PagedTrs, ResourceEventHandler {
     private final static Logger log = LoggerFactory.getLogger(InmemPagedTrs.class);
-    private final static URI NIL_URI = URI.create(TRSConstants.RDF_NIL);
 
     /**
      * Max items per changelog Page
@@ -244,7 +243,7 @@ public class InmemPagedTrs implements PagedTrs, ResourceEventHandler {
     private ChangeLog findOrCreateChangelogPage() {
         final ChangeLog page;
         if (this.changelogResources.isEmpty()) {
-            page = createChangelogPage(NIL_URI, createChangelogUri());
+            page = createChangelogPage(TRSUtil.NIL_URI, createChangelogUri());
         } else {
             final ChangeLog lastPage = getLastChangelogPage();
             if (isChangelogPageFull(lastPage)) {

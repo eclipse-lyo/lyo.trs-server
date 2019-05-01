@@ -146,9 +146,23 @@ public class InmemPagedTrsTest {
         pagedTrs.onHistoryData(TRSUtilTest.createHistory());
         pagedTrs.onHistoryData(TRSUtilTest.createHistory());
 
-        assertThat(pagedTrs.getChangeLog(2).getPrevious()).isEqualTo(
-                pagedTrs.getChangeLog(1).getAbout());
+        assertThat(pagedTrs.getChangeLog(2).getPrevious()).isEqualTo(pagedTrs.getChangeLog(1).getAbout());
+    }
 
+    @Test
+    public void testLogPagesLinkedFirstNil() {
+        final InmemPagedTrs pagedTrs = buildPagedTrs(ImmutableSet.of());
+
+        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+
+        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        pagedTrs.onHistoryData(TRSUtilTest.createHistory());
+
+        assertThat(pagedTrs.getChangeLog(1).getPrevious()).isEqualTo(TRSUtil.NIL_URI);
     }
 
     private URI dummyUri() {
