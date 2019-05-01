@@ -1,4 +1,4 @@
-# Lyo TRS Server library changelog 
+# Lyo TRS Server library changelog
 
 ## 4.0 (draft)
 
