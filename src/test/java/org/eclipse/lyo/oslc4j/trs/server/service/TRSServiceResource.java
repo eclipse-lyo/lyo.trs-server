@@ -1,12 +1,12 @@
 package org.eclipse.lyo.oslc4j.trs.server.service;
 
-import java.net.URI;
-import java.util.Date;
-import java.util.UUID;
+import java.util.ArrayList;
 import javax.ws.rs.Path;
-import org.eclipse.lyo.oslc4j.trs.server.IChangeHistories;
-import org.eclipse.lyo.oslc4j.trs.server.HistoryData;
-import org.eclipse.lyo.oslc4j.trs.server.SimpleChangeHistories;
+import javax.ws.rs.core.UriBuilder;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+import org.eclipse.lyo.oslc4j.trs.server.PagedTrs;
+import org.eclipse.lyo.oslc4j.trs.server.InmemPagedTrs;
+import org.eclipse.lyo.oslc4j.trs.server.TRSUtilTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,26 +19,17 @@ public class TRSServiceResource extends TrackedResourceSetService {
     }
 
     @Override
-    protected IChangeHistories getChangeHistories() {
+    protected PagedTrs getChangeHistories() {
         log.trace("Change History objects requested");
-        return new SimpleChangeHistories(10) {
-            @Override
-            public HistoryData[] getHistory(final Date dateAfter) {
-                return new HistoryData[]{
-                        createHistory(),
-                        createHistory(),
-                        createHistory(),
-                        createHistory(),
-                        createHistory()
-                };
-            }
-        };
+        final InmemPagedTrs inmemPagedTrs = new InmemPagedTrs(5, 5,
+                UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build(),
+                new ArrayList<>(0));
+        inmemPagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        inmemPagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        inmemPagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        inmemPagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        inmemPagedTrs.onHistoryData(TRSUtilTest.createHistory());
+        return inmemPagedTrs;
     }
 
-    private static HistoryData createHistory() {
-        final HistoryData historyData = HistoryData.getInstance(new Date(),
-                URI.create(String.format("urn:uuid:%s", UUID.randomUUID().toString())),
-                HistoryData.CREATED);
-        return historyData;
-    }
 }

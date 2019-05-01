@@ -19,6 +19,7 @@ package org.eclipse.lyo.oslc4j.trs.server;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.UUID;
 import org.eclipse.lyo.core.trs.ChangeEvent;
 import org.eclipse.lyo.core.trs.Creation;
 import org.eclipse.lyo.core.trs.Modification;
@@ -62,6 +63,13 @@ public class TRSUtilTest {
                             .equals(convertedHd.getTimestamp()));
         Assert.assertTrue(convertedHd.getType().equals(HistoryData.MODIFIED));
 
+    }
+
+    public static HistoryData createHistory() {
+        final HistoryData historyData = HistoryData.getInstance(new Date(),
+                URI.create(String.format("urn:uuid:%s", UUID.randomUUID().toString())),
+                HistoryData.CREATED);
+        return historyData;
     }
 
     private static void initChangeEvent(ChangeEvent ce) throws URISyntaxException {
