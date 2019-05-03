@@ -28,12 +28,14 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.lyo.core.trs.Base;
 import org.eclipse.lyo.core.trs.ChangeLog;
 import org.eclipse.lyo.core.trs.Page;
 import org.eclipse.lyo.core.trs.TRSConstants;
 import org.eclipse.lyo.core.trs.TrackedResourceSet;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcService;
 import org.eclipse.lyo.oslc4j.core.model.Error;
 import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
@@ -49,12 +51,13 @@ import org.slf4j.LoggerFactory;
  * @version $version-stub$
  * @since 2.3.0
  */
-@Path("/trs")
+@Path(TrackedResourceSetService.RESOURCE_PATH)
 @OslcService(TRSConstants.TRS_NAMESPACE)
 public class TrackedResourceSetService {
     private static final Logger log     = LoggerFactory.getLogger(TrackedResourceSetService.class);
     private static final String BASE_PATH = "base";
     private static final String CHANGELOG_PATH = "changeLog";
+    static final String RESOURCE_PATH = "/trs";
 
     /**
      * The instance of the change histories class used by a trs service class implementing this
@@ -79,12 +82,12 @@ public class TrackedResourceSetService {
     @GET
     @Produces({OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_RDF_XML,
             OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
-    public TrackedResourceSet getTrackedResourceSet(@Context UriInfo uriInfo)
+    public TrackedResourceSet getTrackedResourceSet()
             throws URISyntaxException {
         TrackedResourceSet result = new TrackedResourceSet();
 
-        result.setAbout(uriInfo.getRequestUri());
-        result.setBase(uriInfo.getAbsolutePathBuilder().path(BASE_PATH).build());
+        result.setAbout(uriBuilder().build());
+        result.setBase(uriBuilder().path(BASE_PATH).build());
 
         if(getPagedTrs().changelogPageCount() == 0) {
             // FIXME Andrew@2019-04-27: remove this exception from the signature
@@ -104,8 +107,8 @@ public class TrackedResourceSetService {
      */
     @GET
     @Path(BASE_PATH)
-    public Response getBase(@Context UriInfo uriInfo) {
-        final URI newURI = uriInfo.getAbsolutePathBuilder().path("1").build();
+    public Response getBase() {
+        final URI newURI = uriBuilder().path(BASE_PATH).path("1").build();
         return Response.seeOther(newURI).build();
     }
 
@@ -158,8 +161,8 @@ public class TrackedResourceSetService {
      */
     @GET
     @Path(CHANGELOG_PATH)
-    public Response getChangeLog(@Context UriInfo uriInfo) {
-        final URI newURI = uriInfo.getAbsolutePathBuilder().path("1").build();
+    public Response getChangeLog() {
+        final URI newURI = uriBuilder().path(CHANGELOG_PATH).path("1").build();
         return Response.seeOther(newURI).build();
     }
 
@@ -186,5 +189,9 @@ public class TrackedResourceSetService {
         }
         log.debug("TRS Change Log page contains {} members", changeLog.getChange().size());
         return Response.ok(changeLog).build();
+    }
+
+    private static UriBuilder uriBuilder() {
+        return UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path(RESOURCE_PATH);
     }
 }
