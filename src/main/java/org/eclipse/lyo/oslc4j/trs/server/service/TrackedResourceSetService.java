@@ -25,11 +25,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.lyo.core.trs.Base;
 import org.eclipse.lyo.core.trs.ChangeLog;
 import org.eclipse.lyo.core.trs.Page;
@@ -57,7 +55,7 @@ public class TrackedResourceSetService {
     private static final Logger log     = LoggerFactory.getLogger(TrackedResourceSetService.class);
     private static final String BASE_PATH = "base";
     private static final String CHANGELOG_PATH = "changeLog";
-    static final String RESOURCE_PATH = "/trs";
+    public static final String RESOURCE_PATH = "/trs";
 
     /**
      * The instance of the change histories class used by a trs service class implementing this
